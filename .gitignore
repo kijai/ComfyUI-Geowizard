@@ -1,0 +1,9 @@
+wandb/
+*debug*
+debugs/
+outputs/
+samples/
+__pycache__/
+*.jpg
+*.jpeg
+*.pyc

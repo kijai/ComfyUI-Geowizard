@@ -1,0 +1,8 @@
+diffusers >= 0.26.0
+numpy >= 1.23.1
+Pillow
+matplotlib>=3.7.5
+scikit-image>=0.18.1
+tqdm >= 4.65.0
+accelerate>=0.28.0
+transformers>=4.39.1
