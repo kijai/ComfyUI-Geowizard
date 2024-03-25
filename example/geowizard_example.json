@@ -1,6 +1,6 @@
 {
-  "last_node_id": 13,
-  "last_link_id": 19,
+  "last_node_id": 16,
+  "last_link_id": 24,
   "nodes": [
     {
       "id": 6,
@@ -9,10 +9,10 @@
         1474,
         182
       ],
-      "size": [
-        755.4162181152351,
-        501.0363755126955
-      ],
+      "size": {
+        "0": 755.4161987304688,
+        "1": 501.036376953125
+      },
       "flags": {},
       "order": 4,
       "mode": 0,
@@ -60,31 +60,6 @@
       ]
     },
     {
-      "id": 7,
-      "type": "PreviewImage",
-      "pos": [
-        1469,
-        730
-      ],
-      "size": [
-        760.8803516113289,
-        519.6941013793949
-      ],
-      "flags": {},
-      "order": 5,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 6
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "PreviewImage"
-      }
-    },
-    {
       "id": 3,
       "type": "LoadImage",
       "pos": [
@@ -103,7 +78,8 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
-            19
+            19,
+            20
           ],
           "shape": 3,
           "slot_index": 0
@@ -132,7 +108,7 @@
       ],
       "size": {
         "0": 315,
-        "1": 58
+        "1": 82
       },
       "flags": {},
       "order": 2,
@@ -163,6 +139,144 @@
       ]
     },
     {
+      "id": 7,
+      "type": "PreviewImage",
+      "pos": [
+        1469,
+        730
+      ],
+      "size": {
+        "0": 760.88037109375,
+        "1": 519.694091796875
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 6
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 14,
+      "type": "ImageConcanate",
+      "pos": [
+        522,
+        1043
+      ],
+      "size": {
+        "0": 315,
+        "1": 78
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image1",
+          "type": "IMAGE",
+          "link": 20
+        },
+        {
+          "name": "image2",
+          "type": "IMAGE",
+          "link": 21
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            22
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageConcanate"
+      },
+      "widgets_values": [
+        "right"
+      ]
+    },
+    {
+      "id": 15,
+      "type": "ImageConcanate",
+      "pos": [
+        883,
+        1045
+      ],
+      "size": {
+        "0": 315,
+        "1": 78
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image1",
+          "type": "IMAGE",
+          "link": 22
+        },
+        {
+          "name": "image2",
+          "type": "IMAGE",
+          "link": 24
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            23
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImageConcanate"
+      },
+      "widgets_values": [
+        "right"
+      ]
+    },
+    {
+      "id": 16,
+      "type": "PreviewImage",
+      "pos": [
+        551,
+        1185
+      ],
+      "size": [
+        702.507007421875,
+        169.12993384094239
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 23
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
       "id": 2,
       "type": "geowizard_sampler",
       "pos": [
@@ -171,7 +285,7 @@
       ],
       "size": {
         "0": 315,
-        "1": 198
+        "1": 222
       },
       "flags": {},
       "order": 3,
@@ -195,7 +309,8 @@
           "name": "depth",
           "type": "IMAGE",
           "links": [
-            5
+            5,
+            21
           ],
           "shape": 3,
           "slot_index": 0
@@ -204,7 +319,8 @@
           "name": "normal",
           "type": "IMAGE",
           "links": [
-            6
+            6,
+            24
           ],
           "shape": 3,
           "slot_index": 1
@@ -214,11 +330,12 @@
         "Node name for S&R": "geowizard_sampler"
       },
       "widgets_values": [
-        10,
-        3,
+        6,
+        2,
         1120760087628591,
         "fixed",
         "indoor",
+        "DEISMultistepScheduler",
         true
       ]
     }
@@ -261,6 +378,46 @@
       3,
       0,
       2,
+      1,
+      "IMAGE"
+    ],
+    [
+      20,
+      3,
+      0,
+      14,
+      0,
+      "IMAGE"
+    ],
+    [
+      21,
+      2,
+      0,
+      14,
+      1,
+      "IMAGE"
+    ],
+    [
+      22,
+      14,
+      0,
+      15,
+      0,
+      "IMAGE"
+    ],
+    [
+      23,
+      15,
+      0,
+      16,
+      0,
+      "IMAGE"
+    ],
+    [
+      24,
+      2,
+      1,
+      15,
       1,
       "IMAGE"
     ]
