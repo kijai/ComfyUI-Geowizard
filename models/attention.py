@@ -21,7 +21,17 @@ from typing import Any, Dict, Optional
 import torch
 import torch.nn.functional as F
 from torch import nn
-import xformers
+
+import comfy.model_management as mm
+if mm.XFORMERS_IS_AVAILABLE:
+    try:
+        import xformers
+        import xformers.ops
+
+        XFORMERS_IS_AVAILABLE = True
+    except:
+        XFORMERS_IS_AVAILABLE = False
+        print("no module 'xformers'. Processing without...")
 
 from diffusers.utils import USE_PEFT_BACKEND
 from diffusers.utils.torch_utils import maybe_allow_in_graph
