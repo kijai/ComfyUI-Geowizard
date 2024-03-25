@@ -176,7 +176,7 @@ class geowizard_sampler:
                 batch_pbar = comfy.utils.ProgressBar(B)
             for img in image:
                 pipe_out = pipe(
-                    image[0],
+                    img,
                     device=device,
                     denoising_steps=steps,
                     ensemble_size=ensemble_size,
