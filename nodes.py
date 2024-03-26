@@ -199,9 +199,9 @@ class geowizard_sampler:
             depth_out = torch.cat(depth_maps, dim=0)
             depth_out = torch.clamp(depth, 0.0, 1.0)
             depth_out = 1.0 - depth_out
-            depth_out = depth_out.cpu()
+            depth_out = depth_out.cpu().to(torch.float32)
 
-            normal_out = torch.cat(normal_maps, dim=0).cpu()
+            normal_out = torch.cat(normal_maps, dim=0).cpu().to(torch.float32)
             if not keep_model_loaded:
                 pipe = pipe.to('cpu')
 
