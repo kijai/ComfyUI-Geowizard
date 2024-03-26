@@ -58,7 +58,7 @@ class geowizard_model_loader:
     RETURN_TYPES = ("GEOWIZMODEL",)
     RETURN_NAMES = ("geowizard_model",)
     FUNCTION = "loadmodel"
-    CATEGORY = "champWrapper"
+    CATEGORY = "Geowizard"
 
     def loadmodel(self, vae, dtype):
         mm.soft_empty_cache()
@@ -141,7 +141,7 @@ class geowizard_sampler:
     RETURN_TYPES = ("IMAGE", "IMAGE",)
     RETURN_NAMES = ("depth", "normal",)
     FUNCTION = "process"
-    CATEGORY = "champWrapper"
+    CATEGORY = "Geowizard"
 
     def process(self, geowizard_model, image, domain, ensemble_size, steps, seed, scheduler, keep_model_loaded):
         device = mm.get_torch_device()
