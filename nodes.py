@@ -197,7 +197,7 @@ class geowizard_sampler:
                     batch_pbar.update(1)
 
             depth_out = torch.cat(depth_maps, dim=0)
-            depth_out = torch.clamp(depth, 0.0, 1.0)
+            depth_out = torch.clamp(depth_out, 0.0, 1.0)
             depth_out = 1.0 - depth_out
             depth_out = depth_out.cpu().to(torch.float32)
 
