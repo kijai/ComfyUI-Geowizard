@@ -81,7 +81,6 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
                  match_input_res:bool =True,
                  batch_size:int = 0,
                  domain: str = "indoor",
-                 seed: int = 0,
                  color_map: str="Spectral",
                  show_progress_bar:bool = True,
                  ensemble_kwargs: Dict = None,
@@ -151,7 +150,6 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
                 input_rgb=batched_image,
                 num_inference_steps=denoising_steps,
                 domain=domain,
-                seed=seed,
                 show_pbar=show_progress_bar,
             )
             depth_pred_ls.append(depth_pred_raw.detach().clone())
@@ -167,6 +165,7 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
             depth_pred, pred_uncert = ensemble_depths(
                 depth_preds, **(ensemble_kwargs or {})
             )
+            print("pred_uncert: ",pred_uncert)
             normal_pred = ensemble_normals(normal_preds)
         else:
             depth_pred = depth_preds
@@ -237,7 +236,6 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
     def single_infer(self,input_rgb:torch.Tensor,
                      num_inference_steps:int,
                      domain:str,
-                     seed: int,
                      show_pbar:bool,):
 
         device = input_rgb.device
@@ -249,9 +247,7 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
         # encode image
         rgb_latent = self.encode_RGB(input_rgb)
         
-        # Initial depth map (Guassian noise)
-        if seed >= 0:
-            torch.manual_seed(0)
+        # Initial geometric maps (Guassian noise)
         geo_latent = torch.randn(rgb_latent.shape, device=device, dtype=self.dtype).repeat(2,1,1,1)
         rgb_latent = rgb_latent.repeat(2,1,1,1)
 

@@ -183,7 +183,6 @@ class geowizard_sampler:
                     processing_res=H,
                     batch_size=0,
                     domain=domain,
-                    seed = seed,
                     show_progress_bar=True,
                 )
 
