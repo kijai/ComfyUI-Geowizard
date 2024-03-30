@@ -4,7 +4,7 @@ import torch
 from omegaconf import OmegaConf
 from .models.depth_normal_pipeline_clip import DepthNormalEstimationPipeline
 from .models.unet_2d_condition import UNet2DConditionModel
-from diffusers import  DDIMScheduler, DDPMScheduler, DEISMultistepScheduler, PNDMScheduler, AutoencoderKL
+from diffusers import  DDIMScheduler, DDPMScheduler, DEISMultistepScheduler, PNDMScheduler, DPMSolverMultistepScheduler, EulerDiscreteScheduler, AutoencoderKL
 
 
 import torch.nn.functional as F
@@ -32,6 +32,8 @@ scheduler_mapping = {
                 'DDPMScheduler': DDPMScheduler,
                 'DEISMultistepScheduler': DEISMultistepScheduler,
                 'PNDMScheduler': PNDMScheduler,
+                'DPMSolverMultistepScheduler': DPMSolverMultistepScheduler,
+                'EulerDiscreteScheduler': EulerDiscreteScheduler
             }
 def get_scheduler_class(scheduler_str, model_path, subfolder='scheduler'):
     if scheduler_str in scheduler_mapping:
@@ -130,6 +132,8 @@ class geowizard_sampler:
                         'DDPMScheduler',
                         'DEISMultistepScheduler',
                         'PNDMScheduler',
+                        'DPMSolverMultistepScheduler',
+                        'EulerDiscreteScheduler'
                     ], {
                         "default": 'DDIMScheduler'
                     }),
@@ -159,13 +163,14 @@ class geowizard_sampler:
             image = image.permute(0, 3, 1, 2)
 
             B, C, H, W = image.shape
+            ratio = 8
             orig_H, orig_W = H, W
-            if W % 64 != 0:
-                W = W - (W % 64)
-            if H % 64 != 0:
-                H = H - (H % 64)
-            if orig_H % 64 != 0 or orig_W % 64 != 0:
-                image = F.interpolate(image, size=(H, W), mode="bicubic")
+            if W % ratio != 0:
+                W = W - (W % ratio)
+            if H % ratio != 0:
+                H = H - (H % ratio)
+            if orig_H % ratio != 0 or orig_W % ratio != 0:
+                image = F.interpolate(image, size=(H, W), mode="bilinear")
            
             B, C, H, W = image.shape
 
@@ -187,20 +192,28 @@ class geowizard_sampler:
                 )
 
                 depth = pipe_out.depth_pred_tensor
-                depth = depth.repeat(3,1,1).unsqueeze(0).permute(0, 2, 3, 1)
+                depth = depth.repeat(3,1,1).unsqueeze(0)
                 depth_maps.append(depth)
                 normal_colored = pipe_out.normal_colored
-                normal_tensor = transforms.ToTensor()(normal_colored).unsqueeze(0).permute(0, 2, 3, 1)
+                normal_tensor = transforms.ToTensor()(normal_colored).unsqueeze(0)
                 normal_maps.append(normal_tensor)
                 if B > 1:
                     batch_pbar.update(1)
-
+            
             depth_out = torch.cat(depth_maps, dim=0)
             depth_out = torch.clamp(depth_out, 0.0, 1.0)
             depth_out = 1.0 - depth_out
-            depth_out = depth_out.cpu().to(torch.float32)
 
-            normal_out = torch.cat(normal_maps, dim=0).cpu().to(torch.float32)
+            normal_out = torch.cat(normal_maps, dim=0)
+
+            if depth_out.shape[2] != orig_H or depth_out.shape[3] != orig_W:
+                print("Restoring original dimensions: ", orig_W,"x",orig_H)
+                depth_out = F.interpolate(depth_out, size=(orig_H, orig_W), mode="bicubic")
+                normal_out = F.interpolate(normal_out, size=(orig_H, orig_W), mode="bicubic")
+
+            depth_out = depth_out.permute(0, 2, 3, 1).cpu().to(torch.float32)
+            normal_out = normal_out.permute(0, 2, 3, 1).cpu().to(torch.float32)
+            
             if not keep_model_loaded:
                 pipe = pipe.to('cpu')
 

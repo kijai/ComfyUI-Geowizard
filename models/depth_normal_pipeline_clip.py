@@ -165,7 +165,7 @@ class DepthNormalEstimationPipeline(DiffusionPipeline):
             depth_pred, pred_uncert = ensemble_depths(
                 depth_preds, **(ensemble_kwargs or {})
             )
-            print("pred_uncert: ",pred_uncert)
+            #print("pred_uncert: ",pred_uncert)
             normal_pred = ensemble_normals(normal_preds)
         else:
             depth_pred = depth_preds
