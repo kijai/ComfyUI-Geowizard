@@ -74,15 +74,15 @@ class geowizard_model_loader:
             self.current_config = custom_config
             # setup pretrained models
             original_config = OmegaConf.load(os.path.join(script_directory, f"configs/v1-inference.yaml"))
+            vae_config = OmegaConf.load(os.path.join(script_directory, f"configs/vae_config.yaml"))
 
             dtype = convert_dtype(dtype)
             
-            from diffusers.loaders.single_file_utils import (convert_ldm_vae_checkpoint, create_vae_diffusers_config)
+            from diffusers.loaders.single_file_utils import (convert_ldm_vae_checkpoint)
             
             sd = vae.get_sd()
-            converted_vae_config = create_vae_diffusers_config(original_config, image_size=512)
-            converted_vae = convert_ldm_vae_checkpoint(sd, converted_vae_config)
-            self.vae = AutoencoderKL(**converted_vae_config)
+            converted_vae = convert_ldm_vae_checkpoint(sd, vae_config)
+            self.vae = AutoencoderKL(**vae_config)
             self.vae.load_state_dict(converted_vae, strict=False)
 
 
