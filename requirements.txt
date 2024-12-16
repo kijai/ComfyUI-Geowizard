@@ -6,3 +6,5 @@ scikit-image>=0.18.1
 tqdm >= 4.65.0
 accelerate>=0.28.0
 transformers>=4.39.1
+omegaconf
+opencv-python
